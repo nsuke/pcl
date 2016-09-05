@@ -69,8 +69,18 @@ if(Boost_CHRONO_FOUND)
   set(PCLCONFIG_AVAILABLE_BOOST_MODULES "${PCLCONFIG_AVAILABLE_BOOST_MODULES} chrono")
 endif(Boost_CHRONO_FOUND)
 
-configure_file("${PCL_SOURCE_DIR}/PCLConfig.cmake.in"
-               "${PCL_BINARY_DIR}/PCLConfig.cmake" @ONLY)
+include(CMakePackageConfigHelpers OPTIONAL RESULT_VARIABLE _relocatable_install)
+
+if(_relocatable_install)
+    configure_package_config_file("${PCL_SOURCE_DIR}/PCLConfig.cmake.in"
+                                  "${PCL_BINARY_DIR}/PCLConfig.cmake"
+                                  INSTALL_DESTINATION ${PCLCONFIG_INSTALL_DIR}
+                                  PATH_VARS CMAKE_INSTALL_PREFIX)
+else(_relocatable_install)
+    configure_file("${PCL_SOURCE_DIR}/PCLConfig.cmake.in"
+                   "${PCL_BINARY_DIR}/PCLConfig.cmake" @ONLY)
+endif(_relocatable_install)
+
 configure_file("${PCL_SOURCE_DIR}/PCLConfigVersion.cmake.in"
                "${PCL_BINARY_DIR}/PCLConfigVersion.cmake" @ONLY)
 install(FILES
